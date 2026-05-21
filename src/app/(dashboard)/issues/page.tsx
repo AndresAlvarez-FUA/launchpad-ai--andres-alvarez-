@@ -1,5 +1,5 @@
-import { PagePlaceholder } from "@/components/page-placeholder"
+import { IssuesPanel } from "@/components/issues-panel"
 
 export default function IssuesPage() {
-  return <PagePlaceholder title="Issues" />
+  return <IssuesPanel />
 }

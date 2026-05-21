@@ -115,19 +115,38 @@ export async function POST(request: Request) {
 
       if (issue.suggested_fix) {
         const fix: SuggestedFixResult = issue.suggested_fix
-        const { error: fixError } = await supabase.from("suggested_fixes").insert({
-          issue_id: savedIssue.id,
-          field_name: fix.field_name,
-          before_value: fix.before_value,
-          after_value: fix.after_value,
-          reason: fix.reason,
-          requires_approval: true,
-          status: "pending",
-        })
+        const { data: savedFix, error: fixError } = await supabase
+          .from("suggested_fixes")
+          .insert({
+            issue_id: savedIssue.id,
+            field_name: fix.field_name,
+            before_value: fix.before_value,
+            after_value: fix.after_value,
+            reason: fix.reason,
+            requires_approval: true,
+            status: "pending",
+          })
+          .select("id")
+          .single()
 
         if (fixError) {
           throw fixError
         }
+
+        await writeAuditLog({
+          actor_type: "agent",
+          actor_name: "Claude",
+          action: "FIX_SUGGESTED",
+          entity_type: "suggested_fix",
+          entity_id: savedFix.id,
+          after_value: {
+            issueId: savedIssue.id,
+            field_name: fix.field_name,
+            before_value: fix.before_value,
+            after_value: fix.after_value,
+          },
+          reason: fix.reason,
+        })
       }
     }
 
