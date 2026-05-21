@@ -7,26 +7,41 @@ function parseRunNumber(payrollRunName: string): number {
 
 export async function ensurePayrollRun(options: {
   fileName: string
+  runNumber?: number
   payrollRunName?: string
   rowCount?: number
 }): Promise<string> {
   const supabase = createServiceClient()
   const filename = options.fileName.trim()
-  const runNumber = parseRunNumber(options.payrollRunName ?? "Payroll Run 1")
+  const runNumber =
+    options.runNumber ?? parseRunNumber(options.payrollRunName ?? "Payroll Run 1")
 
-  const { data: existing, error: existingError } = await supabase
+  const { data: existingByRun, error: runError } = await supabase
     .from("payroll_runs")
     .select("id")
-    .eq("filename", filename)
+    .eq("run_number", runNumber)
     .limit(1)
     .maybeSingle()
 
-  if (existingError) {
-    throw existingError
+  if (runError) {
+    throw runError
   }
 
-  if (existing?.id) {
-    return existing.id
+  if (existingByRun?.id) {
+    const { error: updateError } = await supabase
+      .from("payroll_runs")
+      .update({
+        filename,
+        status: "uploaded",
+        row_count: options.rowCount ?? 0,
+      })
+      .eq("id", existingByRun.id)
+
+    if (updateError) {
+      throw updateError
+    }
+
+    return existingByRun.id
   }
 
   const { data, error } = await supabase

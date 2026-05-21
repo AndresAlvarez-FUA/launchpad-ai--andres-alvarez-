@@ -1,5 +1,5 @@
-import { PagePlaceholder } from "@/components/page-placeholder"
+import { PayrollRunsForm } from "@/components/payroll-runs-form"
 
 export default function PayrollRunsPage() {
-  return <PagePlaceholder title="Payroll Runs" />
+  return <PayrollRunsForm />
 }

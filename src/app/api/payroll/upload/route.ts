@@ -23,8 +23,12 @@ export async function POST(request: Request) {
         ? body.rowCount
         : 0
 
+    const runNumber =
+      typeof body.runNumber === "number" ? body.runNumber : undefined
+
     const payrollRunId = await ensurePayrollRun({
       fileName,
+      runNumber,
       payrollRunName,
       rowCount,
     })
@@ -35,11 +39,11 @@ export async function POST(request: Request) {
       action: "PAYROLL_CSV_UPLOADED",
       entity_type: "payroll_run",
       entity_id: payrollRunId,
-      after_value: { fileName, fileSize, payrollRunName, rowCount },
+      after_value: { fileName, fileSize, payrollRunName, runNumber, rowCount },
     })
 
     return Response.json({
-      data: { payrollRunId, fileName, rowCount },
+      data: { payrollRunId, fileName, rowCount, runNumber: runNumber ?? null },
       error: null,
     })
   } catch (error) {
