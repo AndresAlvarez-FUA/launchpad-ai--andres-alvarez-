@@ -1,5 +1,5 @@
-import { PagePlaceholder } from "@/components/page-placeholder"
+import { AssistantChat } from "@/components/assistant-chat"
 
 export default function AssistantPage() {
-  return <PagePlaceholder title="AI Assistant" />
+  return <AssistantChat />
 }

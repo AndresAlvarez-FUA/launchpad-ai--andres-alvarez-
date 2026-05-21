@@ -40,6 +40,9 @@ create unique index if not exists participants_employee_id_idx on participants (
 -- suggested_fixes (existing in Supabase)
 -- columns: id, issue_id, field_name, before_value, after_value, reason, requires_approval, status, created_at
 
+-- chat_messages (existing in Supabase)
+-- columns: id, created_at, role, content
+
 create table if not exists audit_logs (
   id uuid primary key default gen_random_uuid(),
   actor_type text not null check (actor_type in ('user', 'agent', 'system')),
