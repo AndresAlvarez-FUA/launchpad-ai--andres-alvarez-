@@ -1,5 +1,5 @@
-import { PagePlaceholder } from "@/components/page-placeholder"
+import { PayrollMappingForm } from "@/components/payroll-mapping-form"
 
 export default function PayrollMappingPage() {
-  return <PagePlaceholder title="Payroll Mapping" />
+  return <PayrollMappingForm />
 }
